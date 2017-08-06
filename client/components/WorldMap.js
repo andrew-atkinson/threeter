@@ -32,7 +32,7 @@ class WorldMap extends Component {
       })
 
     axios.get('/api/')
-      .then(res => this.setState({ tweets: res.data }))
+         .then(res => { this.setState({ tweets: res.data }) })
 
     window.addEventListener("resize", this.updateDimensions.bind(this));
   }
@@ -65,7 +65,7 @@ class WorldMap extends Component {
     return (
       <div >
         <svg width={windowWidth} height={windowHeight} viewBox="0 0 800 450">
-          <rect x={0} y={0} width={windowWidth} height={windowHeight} fill={`rgba(0,0,0,25)`} />
+          <rect x={0} y={0} width={windowWidth} height={windowHeight} fill={`rgba(20,20,20,25)`} />
           <g className="countries">
             {
               this.state.worlddata.map((d, i) => (
@@ -73,8 +73,8 @@ class WorldMap extends Component {
                   key={`path-${i}`}
                   d={geoPath().projection(this.projection())(d)}
                   className="country"
-                  fill={`rgba(38,50,56,120)`}
-                  stroke="#FFFFFF"
+                  fill={`rgba(50,${i},100,128)`}
+                  stroke="#999999"
                   strokeWidth={0.5}
                   onClick={() => this.handleCountryClick(i)}
                 />
@@ -83,14 +83,14 @@ class WorldMap extends Component {
           </g>
           <g className="markers">
             {
-              this.state.cities.map((city, i) => (
+              this.state.tweets && this.state.tweets.map((tweet, i) => (
                 <circle
                   key={`marker-${i}`}
-                  cx={this.projection()(city.coordinates)[0]}
-                  cy={this.projection()(city.coordinates)[1]}
+                  cx={this.projection()(tweet.place_bounding_box_coordinates[0][0])[0]}
+                  cy={this.projection()(tweet.place_bounding_box_coordinates[0][0])[1]}
                   r={2}
-                  fill="#E91E63"
-                  stroke="#FFFFFF"
+                  fill="#ffffff"
+                  stroke="#444"
                   className="marker"
                   onClick={() => this.handleMarkerClick(i)}
                 />
