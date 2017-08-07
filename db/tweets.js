@@ -12,6 +12,7 @@ module.exports = db.define('tweets', {
   place_country: Sequelize.STRING,
   place_bounding_box_coordinates:Sequelize.ARRAY(Sequelize.TEXT),
   in_reply_to_status_id_str: Sequelize.STRING,
-  in_reply_to_user_id_str: Sequelize.STRING
+  in_reply_to_user_id_str: Sequelize.STRING,
+  timestamp_ms: Sequelize.STRING
 })
 
