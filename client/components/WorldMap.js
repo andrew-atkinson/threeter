@@ -9,7 +9,7 @@ class WorldMap extends Component {
     super()
     this.state = {
       worlddata: [],
-      cities: [],
+      tweets: [],
       windowWidth: window.innerWidth,
       windowHeight: window.innerHeight
     }
@@ -32,7 +32,10 @@ class WorldMap extends Component {
       })
 
     axios.get('/api/')
-         .then(res => { this.setState({ tweets: res.data }) })
+      .then(res => {
+        console.log(res.data)
+        return this.setState({ tweets: res.data })
+      })
 
     window.addEventListener("resize", this.updateDimensions.bind(this));
   }
@@ -65,7 +68,7 @@ class WorldMap extends Component {
     return (
       <div >
         <svg width={windowWidth} height={windowHeight} viewBox="0 0 800 450">
-          <rect x={0} y={0} width={windowWidth} height={windowHeight} fill={`rgba(20,20,20,25)`} />
+          <rect x={0} y={0} width={windowWidth} height={windowHeight} fill={`rgba(0,20,0,1)`} />
           <g className="countries">
             {
               this.state.worlddata.map((d, i) => (
@@ -73,8 +76,8 @@ class WorldMap extends Component {
                   key={`path-${i}`}
                   d={geoPath().projection(this.projection())(d)}
                   className="country"
-                  fill={`rgba(50,${i},100,128)`}
-                  stroke="#999999"
+                  fill={`rgba(50,${i},${i*5},${i*0.33})`}
+                  stroke={`rgba(${50+(i*1.5)},${50+(i*0.3)},${i+80},${i*0.24})`}
                   strokeWidth={0.5}
                   onClick={() => this.handleCountryClick(i)}
                 />

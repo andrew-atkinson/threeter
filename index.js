@@ -7,7 +7,7 @@ const PORT = process.env.PORT || 1337
 const app = express()
 const server = app.listen(PORT)
 
-db.sync({ force: true }).then(() => console.log('Database is synced'))
+db.sync({ force: false }).then(() => console.log('Database is synced'))
 
 // logging middleware
 app.use(volleyball)

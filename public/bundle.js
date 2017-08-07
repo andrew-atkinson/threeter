@@ -27061,7 +27061,7 @@ var WorldMap = function (_Component) {
 
     _this.state = {
       worlddata: [],
-      cities: [],
+      tweets: [],
       windowWidth: window.innerWidth,
       windowHeight: window.innerHeight
     };
@@ -27088,7 +27088,8 @@ var WorldMap = function (_Component) {
       });
 
       _axios2.default.get('/api/').then(function (res) {
-        _this2.setState({ tweets: res.data });
+        console.log(res.data);
+        return _this2.setState({ tweets: res.data });
       });
 
       window.addEventListener("resize", this.updateDimensions.bind(this));
@@ -27131,7 +27132,7 @@ var WorldMap = function (_Component) {
         _react2.default.createElement(
           "svg",
           { width: windowWidth, height: windowHeight, viewBox: "0 0 800 450" },
-          _react2.default.createElement("rect", { x: 0, y: 0, width: windowWidth, height: windowHeight, fill: "rgba(20,20,20,25)" }),
+          _react2.default.createElement("rect", { x: 0, y: 0, width: windowWidth, height: windowHeight, fill: "rgba(0,20,0,1)" }),
           _react2.default.createElement(
             "g",
             { className: "countries" },
@@ -27140,8 +27141,8 @@ var WorldMap = function (_Component) {
                 key: "path-" + i,
                 d: (0, _d3Geo.geoPath)().projection(_this3.projection())(d),
                 className: "country",
-                fill: "rgba(50," + i + ",100,128)",
-                stroke: "#999999",
+                fill: "rgba(50," + i + "," + i * 5 + "," + i * 0.33 + ")",
+                stroke: "rgba(" + (50 + i * 1.5) + "," + (50 + i * 0.3) + "," + (i + 80) + "," + i * 0.24 + ")",
                 strokeWidth: 0.5,
                 onClick: function onClick() {
                   return _this3.handleCountryClick(i);
