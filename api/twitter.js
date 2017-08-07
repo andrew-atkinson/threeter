@@ -29,12 +29,6 @@ stream.on('tweet', function (tweet) {
             timestamp_ms: tweet.timestamp_ms
         }
     })
-    // if (tweet.place) 
-    console.log(tweet)
 })
-
-// var reTweet = T.get('collections/list', 'tweet_id/894161161393848320', (err, data, reponse)=>{
-//     console.log(data)
-// })
 
 module.exports = { T }

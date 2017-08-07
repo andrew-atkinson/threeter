@@ -4,21 +4,22 @@ import { feature } from "topojson-client"
 import axios from 'axios'
 import { render } from 'react-dom'
 
-class WorldMap extends Component {
+class TweetMap extends Component {
   constructor() {
     super()
     this.state = {
+      tweet: { name: null, text: null },
       worlddata: [],
       tweets: [],
       windowWidth: window.innerWidth,
-      windowHeight: window.innerHeight
+      windowHeight: window.innerHeight,
+      clickedTweet: null
     }
-    this.handleCountryClick = this.handleCountryClick.bind(this)
-    this.handleMarkerClick = this.handleMarkerClick.bind(this)
+    this.handleTweetClick = this.handleTweetClick.bind(this)
   }
 
   componentDidMount() {
-    fetch('/world-110m.json')
+    fetch('/world-50m.json')
       .then(response => {
         if (response.status !== 200) {
           console.log(`There was a problem: ${response.status}`)
@@ -46,12 +47,9 @@ class WorldMap extends Component {
       .translate([800 / 2, 450 / 2])
   }
 
-  handleCountryClick(countryIndex) {
-    console.log("Clicked on country: ", this.state.worlddata[countryIndex])
-  }
-
-  handleMarkerClick(i) {
-    console.log("Marker: ", this.state.cities[i])
+  handleTweetClick(i) {
+    this.setState({ tweet: this.state.tweets[i] })
+    console.log("Tweet: ", this.state.tweet)
   }
 
   updateDimensions() {
@@ -63,12 +61,13 @@ class WorldMap extends Component {
   }
 
   render() {
-    var windowWidth = this.state.windowWidth
-    var windowHeight = this.state.windowHeight
+    let windowWidth = this.state.windowWidth
+    let windowHeight = this.state.windowHeight
+    let currentTweet = this.state.tweet
+    let tweets = this.state.tweets
     return (
       <div >
         <svg width={windowWidth} height={windowHeight} viewBox="0 0 800 450">
-          <rect x={0} y={0} width={windowWidth} height={windowHeight} fill={`rgba(0,20,0,1)`} />
           <g className="countries">
             {
               this.state.worlddata.map((d, i) => (
@@ -76,34 +75,36 @@ class WorldMap extends Component {
                   key={`path-${i}`}
                   d={geoPath().projection(this.projection())(d)}
                   className="country"
-                  fill={`rgba(50,${i},${i*5},${i*0.33})`}
-                  stroke={`rgba(${50+(i*1.5)},${50+(i*0.3)},${i+80},${i*0.24})`}
+                  fill={`rgba(50,${i},${i * 5},${i * 0.33})`}
+                  stroke={`rgba(${50 + (i * 1.5)},${50 + (i * 0.3)},${i + 80},${i * 0.24})`}
                   strokeWidth={0.5}
-                  onClick={() => this.handleCountryClick(i)}
                 />
               ))
             }
           </g>
           <g className="markers">
             {
-              this.state.tweets && this.state.tweets.map((tweet, i) => (
-                <circle
+              tweets && tweets.map((tweet, i) => {
+                var fillColor;
+                (currentTweet.id_str === tweet.id_str) ? fillColor = "#FFFF00" : fillColor = "#BBBBBB";
+                return (<circle
                   key={`marker-${i}`}
                   cx={this.projection()(tweet.place_bounding_box_coordinates[0][0])[0]}
                   cy={this.projection()(tweet.place_bounding_box_coordinates[0][0])[1]}
-                  r={2}
-                  fill="#ffffff"
+                  r={1.5}
+                  fill={fillColor}
                   stroke="#444"
                   className="marker"
-                  onClick={() => this.handleMarkerClick(i)}
-                />
-              ))
+                  onClick={() => this.handleTweetClick(i)}
+                />)
+              })
             }
           </g>
+          <text>{currentTweet.name} {currentTweet.text}</text>
         </svg>
       </div>
     )
   }
 }
 
-export default WorldMap
+export default TweetMap

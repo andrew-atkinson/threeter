@@ -27017,168 +27017,7 @@ exports.create = __webpack_require__(153);
 exports.run = __webpack_require__(270);
 
 /***/ }),
-/* 257 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-var _react = __webpack_require__(69);
-
-var _react2 = _interopRequireDefault(_react);
-
-var _d3Geo = __webpack_require__(386);
-
-var _topojsonClient = __webpack_require__(540);
-
-var _axios = __webpack_require__(352);
-
-var _axios2 = _interopRequireDefault(_axios);
-
-var _reactDom = __webpack_require__(146);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-var WorldMap = function (_Component) {
-  _inherits(WorldMap, _Component);
-
-  function WorldMap() {
-    _classCallCheck(this, WorldMap);
-
-    var _this = _possibleConstructorReturn(this, (WorldMap.__proto__ || Object.getPrototypeOf(WorldMap)).call(this));
-
-    _this.state = {
-      worlddata: [],
-      tweets: [],
-      windowWidth: window.innerWidth,
-      windowHeight: window.innerHeight
-    };
-    _this.handleCountryClick = _this.handleCountryClick.bind(_this);
-    _this.handleMarkerClick = _this.handleMarkerClick.bind(_this);
-    return _this;
-  }
-
-  _createClass(WorldMap, [{
-    key: "componentDidMount",
-    value: function componentDidMount() {
-      var _this2 = this;
-
-      fetch('/world-110m.json').then(function (response) {
-        if (response.status !== 200) {
-          console.log("There was a problem: " + response.status);
-          return;
-        }
-        response.json().then(function (worlddata) {
-          _this2.setState({
-            worlddata: (0, _topojsonClient.feature)(worlddata, worlddata.objects.countries).features
-          });
-        });
-      });
-
-      _axios2.default.get('/api/').then(function (res) {
-        console.log(res.data);
-        return _this2.setState({ tweets: res.data });
-      });
-
-      window.addEventListener("resize", this.updateDimensions.bind(this));
-    }
-  }, {
-    key: "projection",
-    value: function projection() {
-      return (0, _d3Geo.geoMercator)().scale(100).translate([800 / 2, 450 / 2]);
-    }
-  }, {
-    key: "handleCountryClick",
-    value: function handleCountryClick(countryIndex) {
-      console.log("Clicked on country: ", this.state.worlddata[countryIndex]);
-    }
-  }, {
-    key: "handleMarkerClick",
-    value: function handleMarkerClick(i) {
-      console.log("Marker: ", this.state.cities[i]);
-    }
-  }, {
-    key: "updateDimensions",
-    value: function updateDimensions() {
-      this.setState({ windowWidth: window.innerWidth, windowHeight: window.innerHeight });
-    }
-  }, {
-    key: "componentWillUnmount",
-    value: function componentWillUnmount() {
-      window.removeEventListener("resize", this.updateDimensions.bind(this));
-    }
-  }, {
-    key: "render",
-    value: function render() {
-      var _this3 = this;
-
-      var windowWidth = this.state.windowWidth;
-      var windowHeight = this.state.windowHeight;
-      return _react2.default.createElement(
-        "div",
-        null,
-        _react2.default.createElement(
-          "svg",
-          { width: windowWidth, height: windowHeight, viewBox: "0 0 800 450" },
-          _react2.default.createElement("rect", { x: 0, y: 0, width: windowWidth, height: windowHeight, fill: "rgba(0,20,0,1)" }),
-          _react2.default.createElement(
-            "g",
-            { className: "countries" },
-            this.state.worlddata.map(function (d, i) {
-              return _react2.default.createElement("path", {
-                key: "path-" + i,
-                d: (0, _d3Geo.geoPath)().projection(_this3.projection())(d),
-                className: "country",
-                fill: "rgba(50," + i + "," + i * 5 + "," + i * 0.33 + ")",
-                stroke: "rgba(" + (50 + i * 1.5) + "," + (50 + i * 0.3) + "," + (i + 80) + "," + i * 0.24 + ")",
-                strokeWidth: 0.5,
-                onClick: function onClick() {
-                  return _this3.handleCountryClick(i);
-                }
-              });
-            })
-          ),
-          _react2.default.createElement(
-            "g",
-            { className: "markers" },
-            this.state.tweets && this.state.tweets.map(function (tweet, i) {
-              return _react2.default.createElement("circle", {
-                key: "marker-" + i,
-                cx: _this3.projection()(tweet.place_bounding_box_coordinates[0][0])[0],
-                cy: _this3.projection()(tweet.place_bounding_box_coordinates[0][0])[1],
-                r: 2,
-                fill: "#ffffff",
-                stroke: "#444",
-                className: "marker",
-                onClick: function onClick() {
-                  return _this3.handleMarkerClick(i);
-                }
-              });
-            })
-          )
-        )
-      );
-    }
-  }]);
-
-  return WorldMap;
-}(_react.Component);
-
-exports.default = WorldMap;
-
-/***/ }),
+/* 257 */,
 /* 258 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -36545,21 +36384,18 @@ var _reactDom2 = _interopRequireDefault(_reactDom);
 
 var _reactRedux = __webpack_require__(258);
 
-var _WorldMap = __webpack_require__(257);
+var _TweetMap = __webpack_require__(548);
 
-var _WorldMap2 = _interopRequireDefault(_WorldMap);
+var _TweetMap2 = _interopRequireDefault(_TweetMap);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 document.addEventListener("DOMContentLoaded", function () {
-  _reactDom2.default.render(
-  // <Provider store={store}>
-  // <Router history={browserHistory}>
-  _react2.default.createElement(_WorldMap2.default, null)
-  // </Router>
-  // </Provider>
-
-  , document.getElementById("app"));
+    _reactDom2.default.render(_react2.default.createElement(
+        'div',
+        null,
+        _react2.default.createElement(_TweetMap2.default, null)
+    ), document.getElementById("app"));
 });
 // import store from './store'
 
@@ -54596,6 +54432,172 @@ module.exports = function (module) {
 	}
 	return module;
 };
+
+/***/ }),
+/* 548 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _react = __webpack_require__(69);
+
+var _react2 = _interopRequireDefault(_react);
+
+var _d3Geo = __webpack_require__(386);
+
+var _topojsonClient = __webpack_require__(540);
+
+var _axios = __webpack_require__(352);
+
+var _axios2 = _interopRequireDefault(_axios);
+
+var _reactDom = __webpack_require__(146);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var TweetMap = function (_Component) {
+  _inherits(TweetMap, _Component);
+
+  function TweetMap() {
+    _classCallCheck(this, TweetMap);
+
+    var _this = _possibleConstructorReturn(this, (TweetMap.__proto__ || Object.getPrototypeOf(TweetMap)).call(this));
+
+    _this.state = {
+      tweet: { name: null, text: null },
+      worlddata: [],
+      tweets: [],
+      windowWidth: window.innerWidth,
+      windowHeight: window.innerHeight,
+      clickedTweet: null
+    };
+    _this.handleTweetClick = _this.handleTweetClick.bind(_this);
+    return _this;
+  }
+
+  _createClass(TweetMap, [{
+    key: "componentDidMount",
+    value: function componentDidMount() {
+      var _this2 = this;
+
+      fetch('/world-50m.json').then(function (response) {
+        if (response.status !== 200) {
+          console.log("There was a problem: " + response.status);
+          return;
+        }
+        response.json().then(function (worlddata) {
+          _this2.setState({
+            worlddata: (0, _topojsonClient.feature)(worlddata, worlddata.objects.countries).features
+          });
+        });
+      });
+
+      _axios2.default.get('/api/').then(function (res) {
+        console.log(res.data);
+        return _this2.setState({ tweets: res.data });
+      });
+
+      window.addEventListener("resize", this.updateDimensions.bind(this));
+    }
+  }, {
+    key: "projection",
+    value: function projection() {
+      return (0, _d3Geo.geoMercator)().scale(100).translate([800 / 2, 450 / 2]);
+    }
+  }, {
+    key: "handleTweetClick",
+    value: function handleTweetClick(i) {
+      this.setState({ tweet: this.state.tweets[i] });
+      console.log("Tweet: ", this.state.tweet);
+    }
+  }, {
+    key: "updateDimensions",
+    value: function updateDimensions() {
+      this.setState({ windowWidth: window.innerWidth, windowHeight: window.innerHeight });
+    }
+  }, {
+    key: "componentWillUnmount",
+    value: function componentWillUnmount() {
+      window.removeEventListener("resize", this.updateDimensions.bind(this));
+    }
+  }, {
+    key: "render",
+    value: function render() {
+      var _this3 = this;
+
+      var windowWidth = this.state.windowWidth;
+      var windowHeight = this.state.windowHeight;
+      var currentTweet = this.state.tweet;
+      var tweets = this.state.tweets;
+      return _react2.default.createElement(
+        "div",
+        null,
+        _react2.default.createElement(
+          "svg",
+          { width: windowWidth, height: windowHeight, viewBox: "0 0 800 450" },
+          _react2.default.createElement(
+            "g",
+            { className: "countries" },
+            this.state.worlddata.map(function (d, i) {
+              return _react2.default.createElement("path", {
+                key: "path-" + i,
+                d: (0, _d3Geo.geoPath)().projection(_this3.projection())(d),
+                className: "country",
+                fill: "rgba(50," + i + "," + i * 5 + "," + i * 0.33 + ")",
+                stroke: "rgba(" + (50 + i * 1.5) + "," + (50 + i * 0.3) + "," + (i + 80) + "," + i * 0.24 + ")",
+                strokeWidth: 0.5
+              });
+            })
+          ),
+          _react2.default.createElement(
+            "g",
+            { className: "markers" },
+            tweets && tweets.map(function (tweet, i) {
+              var fillColor;
+              currentTweet.id_str === tweet.id_str ? fillColor = "#FFFF00" : fillColor = "#BBBBBB";
+              return _react2.default.createElement("circle", {
+                key: "marker-" + i,
+                cx: _this3.projection()(tweet.place_bounding_box_coordinates[0][0])[0],
+                cy: _this3.projection()(tweet.place_bounding_box_coordinates[0][0])[1],
+                r: 1.5,
+                fill: fillColor,
+                stroke: "#444",
+                className: "marker",
+                onClick: function onClick() {
+                  return _this3.handleTweetClick(i);
+                }
+              });
+            })
+          ),
+          _react2.default.createElement(
+            "text",
+            null,
+            currentTweet.name,
+            " ",
+            currentTweet.text
+          )
+        )
+      );
+    }
+  }]);
+
+  return TweetMap;
+}(_react.Component);
+
+exports.default = TweetMap;
 
 /***/ })
 /******/ ]);

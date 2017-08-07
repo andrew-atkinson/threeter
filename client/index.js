@@ -1,17 +1,14 @@
 import React from 'react'
-import {Router, Route, IndexRedirect, browserHistory} from 'react-router'
-import ReactDOM, {render} from 'react-dom'
-import {connect, Provider} from 'react-redux'
+import { Router, Route, IndexRedirect, browserHistory } from 'react-router'
+import ReactDOM, { render } from 'react-dom'
+import { connect, Provider } from 'react-redux'
 // import store from './store'
-import WorldMap from "./components/WorldMap"
+import TweetMap from "./components/TweetMap"
 
 document.addEventListener("DOMContentLoaded", () => {
-  ReactDOM.render(
-    // <Provider store={store}>
-      // <Router history={browserHistory}>
-        <WorldMap />
-      // </Router>
-    // </Provider>
-    ,
-    document.getElementById("app"))
+    ReactDOM.render(
+        <div>
+            <TweetMap />
+        </div>,
+        document.getElementById("app"))
 })
